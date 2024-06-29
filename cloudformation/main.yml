@@ -19,6 +19,31 @@ Parameters:
   LambdaHandler:
     Type: String
     Description: Lambda Handler
+  # Variables for the application
+  JWTSecret:
+    Type: String
+    Description: JWT Secret
+  DBUsername:
+    Type: String
+    Description: DB Username
+  DBPassword:
+    Type: String
+    Description: DB Password
+  DBName:
+    Type: String
+    Description: DB Name
+  DBHost:
+    Type: String
+    Description: DB Host
+  DBPort:
+    Type: String
+    Description: DB Port
+  Port:
+    Type: String
+    Description: Port
+  GoogleMapsAPIKey:
+    Type: String
+    Description: Google Maps API Key
 
 Resources:
 ##############################
@@ -40,6 +65,16 @@ Resources:
             S3File: !Sub
               - '${AppName}.zip'
               - AppName: !Ref AppName
+      Environment:
+        Variables:
+          JWT_SECRET: !Ref JWTSecret
+          DB_USERNAME: !Ref DBUsername
+          DB_PASSWORD: !Ref DBPassword
+          DB_NAME: !Ref DBName
+          DB_HOST: !Ref DBHost
+          DB_PORT: !Ref DBPort
+          PORT: !Ref Port
+          GOOGLE_MAPS_API_KEY: !Ref GoogleMapsAPIKey
 
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'

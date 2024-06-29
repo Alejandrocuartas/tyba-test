@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Fill the variables
+# Fill the variables for AWS infrastructure
 APP_NAME=
 S3_BUCKET=
 GIT_CONNECTION_ARN=
@@ -8,7 +8,17 @@ GIT_REPO=
 GIT_BRANCH=
 LAMBDA_HANDLER=
 
-aws s3 cp init.zip s3://$S3_BUCKET/$APP_NAME/$APP_NAME.zip --no-progress
+# Fill the variables for the application
+JWT_SECRET=
+DB_USERNAME=
+DB_PASSWORD=
+DB_NAME=
+DB_HOST=
+DB_PORT=
+PORT=
+GOOGLE_MAPS_API_KEY=
+
+aws s3 cp ./cloudformation/init.zip s3://$S3_BUCKET/$APP_NAME/$APP_NAME.zip --no-progress
 
 aws cloudformation create-stack \
     --stack-name $APP_NAME \
@@ -19,4 +29,12 @@ aws cloudformation create-stack \
                  ParameterKey=GitConnectionArn,ParameterValue=$GIT_CONNECTION_ARN \
                  ParameterKey=GitRepo,ParameterValue=$GIT_REPO \
                  ParameterKey=GitBranch,ParameterValue=main \
-                 ParameterKey=LambdaHandler,ParameterValue=$LAMBDA_HANDLER
+                 ParameterKey=LambdaHandler,ParameterValue=$LAMBDA_HANDLER \
+                 ParameterKey=JWTSecret,ParameterValue=$JWT_SECRET \
+                 ParameterKey=DBUsername,ParameterValue=$DB_USERNAME \
+                 ParameterKey=DBPassword,ParameterValue=$DB_PASSWORD \
+                 ParameterKey=DBName,ParameterValue=$DB_NAME \
+                 ParameterKey=DBHost,ParameterValue=$DB_HOST \
+                 ParameterKey=DBPort,ParameterValue=$DB_PORT \
+                 ParameterKey=Port,ParameterValue=$PORT \
+                 ParameterKey=GoogleMapsAPIKey,ParameterValue=$GOOGLE_MAPS_API_KEY
