@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 
+import getEnvironmentVariable from './utils/environment';
 import authRouter from './routes/auth';
 import transactionsRouter from './routes/transactions';
-import getEnvironmentVariable from './utils/environment';
-
+import restaurantsRouter from './routes/restaurants';
 class ServerModel {
     private origin
     private port
@@ -30,6 +30,7 @@ class ServerModel {
     routes() {
         this.app.use('/v1/auth', authRouter)
         this.app.use('/v1/transactions', transactionsRouter)
+        this.app.use('/v1/restaurants', restaurantsRouter)
     }
 
     listen() {

@@ -8,6 +8,8 @@ export enum ErrorMessages {
     WRONG_AMOUNT_FOR_NEGATIVE_TRANSACTION = 'Transaction amount must be smaller than 0 for WITHDRAW and INVESTMENT transactions',
     WRONG_AMOUNT_FOR_POSITIVE_TRANSACTION = 'Transaction amount must be greater than 0 for DEPOSIT and PROFIT transactions',
     NOT_ENOUGH_MONEY = 'Not enough money',
+    LOCATION_INCORRECT_FORMAT = 'Location is not a valid latitude and longitude. Please don\'t add spaces.',
+    ADDRESS_NOT_FOUND = 'Address not found',
 }
 
 export const manageError = (response: Response, error: any) => {
@@ -33,6 +35,12 @@ export const manageError = (response: Response, error: any) => {
             break;
         case ErrorMessages.NOT_ENOUGH_MONEY:
             response.status(400).json({ error: error.message });
+            break;
+        case ErrorMessages.LOCATION_INCORRECT_FORMAT:
+            response.status(400).json({ error: error.message });
+            break;
+        case ErrorMessages.ADDRESS_NOT_FOUND:
+            response.status(404).json({ error: error.message });
             break;
         default:
             response.status(500).json({ error: 'Unexpected server error' });
