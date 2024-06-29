@@ -7,6 +7,8 @@ import Server from './server';
 
 const app = new Server();
 
-app.listen();
+if (!process.env.IS_LAMBDA_ENV) {
+    app.listen();
+}
 
 export const handler = serverless(app.app);

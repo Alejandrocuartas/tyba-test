@@ -6,6 +6,12 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.p
     dialect: dbConfig.dialect,
     port: dbConfig.port,
     logging: console.log,
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
+    }
 });
 
 export default sequelize;

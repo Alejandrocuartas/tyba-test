@@ -75,6 +75,7 @@ Resources:
           DB_PORT: !Ref DBPort
           PORT: !Ref Port
           GOOGLE_MAPS_API_KEY: !Ref GoogleMapsAPIKey
+          IS_LAMBDA_ENV: 'true'
 
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
