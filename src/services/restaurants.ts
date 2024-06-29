@@ -10,7 +10,6 @@ pageToken is used to paginate the results and is provided by the Google Maps API
 on the response
 */
 const getRestaurantsService = async (location: string, pageToken?: string) => {
-
     let latitudeLongitude = location.trim();
 
     // If location is not a latitude and longitude, then must search for it
@@ -35,6 +34,4 @@ const getRestaurantsService = async (location: string, pageToken?: string) => {
     };
 };
 
-export {
-    getRestaurantsService,
-};
+export { getRestaurantsService };

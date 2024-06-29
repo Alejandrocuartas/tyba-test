@@ -5,7 +5,7 @@ import { manageError } from '../utils/errors-management';
 /**
 This function controls the pagination of the restaurants near the given location validating REST responses and errors
 */
-const getRestaurantsController = async (req: Request<{}, {}, {}, { location: string, next_page_token?: string }>, res: Response) => {
+const getRestaurantsController = async (req: Request<{}, {}, {}, { location: string; next_page_token?: string }>, res: Response) => {
     try {
         const { location } = req.query;
         const restaurants = await getRestaurantsService(location, req.query.next_page_token);
@@ -16,6 +16,4 @@ const getRestaurantsController = async (req: Request<{}, {}, {}, { location: str
     }
 };
 
-export {
-    getRestaurantsController,
-};
+export { getRestaurantsController };

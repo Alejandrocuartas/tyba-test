@@ -8,21 +8,25 @@ import validateAuth from '../middlewares/auth';
 
 const transactionsRouter = Router();
 
-transactionsRouter.post('/', [
-    validateAuth,
-    createTransactionMiddleware,
-    body('amount').isNumeric().withMessage('Amount must be a number'),
-    body('type').isString().custom((value) => {
-        if (Object.values(TransactionType).indexOf(value) === -1) {
-            throw new Error('Invalid transaction type. Must be one of the following: ' + Object.values(TransactionType).join(', '));
-        }
-        return true;
-    }),
-    validator,
-], transactionsController.createTransaction);
+transactionsRouter.post(
+    '/',
+    [
+        validateAuth,
+        createTransactionMiddleware,
+        body('amount').isNumeric().withMessage('Amount must be a number'),
+        body('type')
+            .isString()
+            .custom((value) => {
+                if (Object.values(TransactionType).indexOf(value) === -1) {
+                    throw new Error('Invalid transaction type. Must be one of the following: ' + Object.values(TransactionType).join(', '));
+                }
+                return true;
+            }),
+        validator,
+    ],
+    transactionsController.createTransaction,
+);
 
-transactionsRouter.get('/', [
-    validateAuth,
-], transactionsController.getTransactions);
+transactionsRouter.get('/', [validateAuth], transactionsController.getTransactions);
 
 export default transactionsRouter;

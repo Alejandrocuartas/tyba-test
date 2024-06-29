@@ -14,7 +14,6 @@ This middleware validates the transaction request body.
 */
 const createTransactionMiddleware = (req: Request<{}, {}, CreateTransactionRequestBody>, res: Response, next: Function) => {
     try {
-
         if (req.body.amount === 0) {
             throw new Error(ErrorMessages.TRANSACTION_AMOUNT_ZERO);
         }
@@ -34,7 +33,6 @@ const createTransactionMiddleware = (req: Request<{}, {}, CreateTransactionReque
         manageError(res, error);
         return;
     }
-
 };
 
 export default createTransactionMiddleware;

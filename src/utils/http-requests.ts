@@ -8,7 +8,6 @@ This function has an input address='Cali, Valle del Cauca, Colombia'
 and returns the latitude and longitude of the address '3.4516467,-76.5319854'
 */
 const geocodeAddress = async (address: string) => {
-    let latitudeLongitude: string;
     const response = await axios.get<GeocodingResponse>(`https://maps.googleapis.com/maps/api/geocode/json`, {
         params: {
             address: address,
@@ -20,9 +19,9 @@ const geocodeAddress = async (address: string) => {
         throw new Error(ErrorMessages.ADDRESS_NOT_FOUND);
     }
 
-    latitudeLongitude = response?.data?.results[0]?.geometry?.location?.lat + ',' + response?.data?.results[0]?.geometry?.location?.lng;
+    const latitudeLongitude = response?.data?.results[0]?.geometry?.location?.lat + ',' + response?.data?.results[0]?.geometry?.location?.lng;
     return latitudeLongitude;
-}
+};
 
 /**
 This function searches for restaurants near the given latitude and longitude latitudeLongitude: string = '3.4516467,-76.5319854'
@@ -40,9 +39,6 @@ const searchRestaurants = async (latitudeLongitude: string, pageToken?: string) 
     });
 
     return response?.data;
-}
-
-export {
-    geocodeAddress,
-    searchRestaurants,
 };
+
+export { geocodeAddress, searchRestaurants };

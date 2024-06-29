@@ -1,4 +1,4 @@
-import Transaction, { TransactionType } from "../models/transaction";
+import { TransactionType } from '../models/transaction';
 
 export interface SignUpRequestBody {
     username: string;
@@ -24,7 +24,7 @@ The param 'userId' is set by the JWT middleware
 */
 export interface ParamsForAuthenticatedUser {
     userId: number;
-};
+}
 
 /**
 Google Maps API response
@@ -35,10 +35,10 @@ export interface GeocodingResponse {
             location: {
                 lat: number;
                 lng: number;
-            }
-        }
+            };
+        };
     }>;
-};
+}
 
 /**
 Google Maps API response
@@ -58,15 +58,15 @@ export interface RestaurantsResponse {
             location: {
                 lat: number;
                 lng: number;
-            }
-        },
+            };
+        };
         photos: Array<{
             height: number;
             width: number;
             html_attributions: Array<string>;
         }>;
     }>;
-};
+}
 
 export interface Restaurants {
     name: string;

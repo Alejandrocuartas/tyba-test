@@ -7,10 +7,10 @@ import validateAuth from '../middlewares/auth';
 
 const restaurantsRouter = Router();
 
-restaurantsRouter.get('/', [
-    validateAuth,
-    query('location').exists().withMessage('location is required on query params'),
-    validator,
-], getRestaurantsController);
+restaurantsRouter.get(
+    '/',
+    [validateAuth, query('location').exists().withMessage('location is required on query params'), validator],
+    getRestaurantsController,
+);
 
 export default restaurantsRouter;

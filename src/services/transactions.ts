@@ -1,6 +1,6 @@
-import { CreateTransactionRequestBody } from "../types";
-import Transaction, { TransactionStatus } from "../models/transaction";
-import { ErrorMessages } from "../utils/errors-management";
+import { CreateTransactionRequestBody } from '../types';
+import Transaction, { TransactionStatus } from '../models/transaction';
+import { ErrorMessages } from '../utils/errors-management';
 
 /**
 This function gets the balance of a user
@@ -10,24 +10,20 @@ const getUserBalance = async (userId: number) => {
         where: {
             user_id: userId,
             status: [TransactionStatus.CONFIRMED, TransactionStatus.PENDING],
-        }
+        },
     });
 
     const totalAmount = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
 
     return totalAmount;
-}
+};
 
 /**
 This function creates a transaction for a user validating if the user has enough money
 in case of withdrawal or investment so the user can't withdraw more money than he has
 and balance is never negative
 */
-const createTransactionService = async (
-    data: CreateTransactionRequestBody,
-    userId: number
-) => {
-
+const createTransactionService = async (data: CreateTransactionRequestBody, userId: number) => {
     //validate user has enough money for withdrawal or investment
     if (data.amount < 0) {
         const totalAmount = await getUserBalance(userId);
@@ -36,7 +32,7 @@ const createTransactionService = async (
         }
     }
 
-    let transaction = new Transaction({
+    const transaction = new Transaction({
         amount: data.amount,
         type: data.type,
         user_id: userId,
@@ -46,17 +42,12 @@ const createTransactionService = async (
     await transaction.save();
 
     return transaction;
-}
+};
 
 /**
 This function gets and paginates the transactions of a user
 */
-const getTransactionsService = async (
-    userId: number,
-    limit: number,
-    page: number
-) => {
-
+const getTransactionsService = async (userId: number, limit: number, page: number) => {
     if (limit < 1 || isNaN(limit)) {
         limit = 10;
     }
@@ -90,9 +81,6 @@ const getTransactionsService = async (
         total_pages: Math.ceil(totalTransactions / limit),
         limit,
     };
-}
+};
 
-export {
-    createTransactionService,
-    getTransactionsService,
-}
+export { createTransactionService, getTransactionsService };

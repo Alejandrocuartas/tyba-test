@@ -14,12 +14,12 @@ const createTransaction = async (req: Request<ParamsForAuthenticatedUser, {}, Cr
         manageError(res, error);
         return;
     }
-}
+};
 
 /**
 This function controls the pagination of the transactions of a user validating REST responses and errors
 */
-const getTransactions = async (req: Request<ParamsForAuthenticatedUser, {}, {}, { limit: number, page: number }>, res: Response) => {
+const getTransactions = async (req: Request<ParamsForAuthenticatedUser, {}, {}, { limit: number; page: number }>, res: Response) => {
     try {
         const transactions = await getTransactionsService(req.params.userId, +req.query.limit, +req.query.page);
         res.status(200).json(transactions);
@@ -27,7 +27,7 @@ const getTransactions = async (req: Request<ParamsForAuthenticatedUser, {}, {}, 
         manageError(res, error);
         return;
     }
-}
+};
 
 export default {
     createTransaction,

@@ -1,6 +1,6 @@
-import { LoginRequestBody, SignUpRequestBody } from "../types";
-import User from "../models/user";
-import { ErrorMessages } from "../utils/errors-management";
+import { LoginRequestBody, SignUpRequestBody } from '../types';
+import User from '../models/user';
+import { ErrorMessages } from '../utils/errors-management';
 
 import bcrypt from 'bcryptjs';
 
@@ -14,7 +14,7 @@ const signupService = async (data: SignUpRequestBody) => {
         throw new Error(ErrorMessages.USERNAME_EXISTS);
     }
 
-    let newUser = new User({
+    const newUser = new User({
         username: data.username,
         password: data.password,
     });
@@ -22,7 +22,7 @@ const signupService = async (data: SignUpRequestBody) => {
     await newUser.save();
 
     return newUser;
-}
+};
 
 /**
 This function authenticates a user validating if the username and password are correct
@@ -41,9 +41,6 @@ const loginService = async (data: LoginRequestBody) => {
     }
 
     return user;
-}
+};
 
-export {
-    signupService,
-    loginService,
-}
+export { signupService, loginService };

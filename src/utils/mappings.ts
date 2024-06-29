@@ -1,12 +1,11 @@
-import { Restaurants, RestaurantsResponse } from "../types";
-import { extractHref } from "./algorithms";
+import { Restaurants, RestaurantsResponse } from '../types';
+import { extractHref } from './algorithms';
 
 /**
 This function maps the response of the Google Maps API to the restaurants REST API type
 */
 const mapRestaurantsApiResponse = (restaurantsApiResponse: RestaurantsResponse): Restaurants[] => {
     return restaurantsApiResponse.results.map((restaurant) => {
-
         /** 
         'mapReference' is used to display the map of the restaurant
         if the restaurant has a photo, the mapReference is the photo's attribution href.
@@ -14,13 +13,13 @@ const mapRestaurantsApiResponse = (restaurantsApiResponse: RestaurantsResponse):
         'restaurant.photos?.[0]?.html_attributions[n]' is a <a> HTML tag with the href attribute
         so we need to extract the href from the tag
         */
-        let mapReference = "";
+        let mapReference = '';
         const restaurantHasPhoto = restaurant.photos?.length;
         const restaurantHasPhotoAttribution = restaurant.photos?.[0]?.html_attributions?.length;
         if (restaurantHasPhoto && restaurantHasPhotoAttribution) {
             mapReference = restaurant.photos[0]?.html_attributions[0];
             if (mapReference === undefined) {
-                mapReference = "";
+                mapReference = '';
             } else {
                 mapReference = extractHref(mapReference);
             }
@@ -35,12 +34,9 @@ const mapRestaurantsApiResponse = (restaurantsApiResponse: RestaurantsResponse):
             is_open_now: restaurant.opening_hours?.open_now,
             lat: restaurant.geometry?.location?.lat,
             lng: restaurant.geometry?.location?.lng,
-            map_reference: mapReference
-        }
-    })
-
+            map_reference: mapReference,
+        };
+    });
 };
 
-export {
-    mapRestaurantsApiResponse,
-};
+export { mapRestaurantsApiResponse };

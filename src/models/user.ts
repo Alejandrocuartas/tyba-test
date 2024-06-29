@@ -1,8 +1,8 @@
-import { DataTypes, Model } from "sequelize";
-import sequelize from "./connection";
+import { DataTypes, Model } from 'sequelize';
+import sequelize from './connection';
 
 import bcrypt from 'bcryptjs';
-import Transaction from "./transaction";
+import Transaction from './transaction';
 
 class User extends Model {
     id!: number;
@@ -10,36 +10,38 @@ class User extends Model {
     password!: string;
 }
 
-User.init({
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            notEmpty: true,
-            len: [3, 30],
+User.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            validate: {
+                notEmpty: true,
+                len: [3, 30],
+            },
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+            },
         },
     },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        },
-    }
-}, {
-    sequelize,
-    modelName: 'User',
-    tableName: 'users',
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-}
+    {
+        sequelize,
+        modelName: 'User',
+        tableName: 'users',
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+    },
 );
 
 User.beforeCreate(async (user) => {

@@ -33,10 +33,7 @@ const extractHref = (htmlString: string) => {
     const match = htmlString.match(hrefRegex);
 
     // If a match is found, return the first capture group (the URL), otherwise return null
-    return match ? match[1] : "";
-}
-
-export {
-    isLatLong,
-    extractHref,
+    return match ? match[1] : '';
 };
+
+export { isLatLong, extractHref };
