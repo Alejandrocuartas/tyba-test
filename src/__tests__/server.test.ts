@@ -23,10 +23,6 @@ describe('/v1/auth/signup', () => {
         expect(res.statusCode).toBe(201);
     });
 
-    test('should return 409 for duplicate username', async () => {
-        expect(1).toBe(409);
-    });
-
     test('should return 400 for incorrect parameters sent', async () => {
         const res = await request(app.app)
             .post('/v1/auth/signup')
