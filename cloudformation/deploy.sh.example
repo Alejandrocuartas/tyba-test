@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Fill the variables
+APP_NAME=
+S3_BUCKET=
+GIT_CONNECTION_ARN=
+GIT_REPO=
+GIT_BRANCH=
+LAMBDA_HANDLER=
+
+aws s3 cp init.zip s3://$S3_BUCKET/$APP_NAME/$APP_NAME.zip --no-progress
+
+aws cloudformation create-stack \
+    --stack-name $APP_NAME \
+    --template-body file://cloudformation/main.yml \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --parameters ParameterKey=AppName,ParameterValue=$APP_NAME \
+                 ParameterKey=S3Bucket,ParameterValue=$S3_BUCKET \
+                 ParameterKey=GitConnectionArn,ParameterValue=$GIT_CONNECTION_ARN \
+                 ParameterKey=GitRepo,ParameterValue=$GIT_REPO \
+                 ParameterKey=GitBranch,ParameterValue=main \
+                 ParameterKey=LambdaHandler,ParameterValue=$LAMBDA_HANDLER

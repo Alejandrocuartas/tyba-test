@@ -10,7 +10,8 @@
     "build": "npm run clean && tsc --build",
     "clean": "rimraf ./dist",
     "lint": "eslint src/**/*.ts --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy": "bash ./cloudformation/deploy.sh"
   },
   "keywords": [],
   "author": "",

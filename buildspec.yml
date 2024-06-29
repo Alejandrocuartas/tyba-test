@@ -1,0 +1,28 @@
+# Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the dist folder
+      - npm run-script build
+  post_build:
+    commands:
+      - echo Running tests...
+      - npm run-script test
+      - echo Testing completed on `date`
+      - zip -r $APP_NAME.zip .
+      - aws s3 cp $APP_NAME.zip s3://$S3_BUCKET/$APP_NAME/$APP_NAME.zip --no-progress
+      - aws lambda update-function-code --function-name $APP_NAME --s3-bucket $S3_BUCKET --s3-key $APP_NAME/$APP_NAME.zip
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - dist/**/*
+    - package.json
+    - package-lock.json
+    - node_modules/**/*
+    - tsconfig.json

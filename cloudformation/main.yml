@@ -1,0 +1,260 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  AppName:
+    Type: String
+    Description: App name
+  S3Bucket:
+    Type: String
+    Description: Bucket S3
+  GitConnectionArn:
+    Type: String
+    Description: Git Connection Arn
+  GitRepo:
+    Type: String
+    Description: Git Repo
+  GitBranch:
+    Type: String
+    Description: Git Branch
+  LambdaHandler:
+    Type: String
+    Description: Lambda Handler
+
+Resources:
+##############################
+# Lambda
+##############################
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref AppName
+      Handler: !Ref LambdaHandler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: 'nodejs18.x'
+      Timeout: 30
+      Code:
+        S3Bucket: !Ref S3Bucket
+        S3Key: !Sub
+          - '${lambdaName}/${S3File}'
+          - lambdaName: !Ref AppName
+            S3File: !Sub
+              - '${AppName}.zip'
+              - AppName: !Ref AppName
+
+  LambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'LambdaExecutionPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+
+##############################
+# API Gateway
+##############################
+  ApiGatewayRestApi:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: !Sub
+        - '${lambdaName}-ApiGateway'
+        - lambdaName: !Ref AppName
+
+  ApiGatewayResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      ParentId: !GetAtt 
+        - ApiGatewayRestApi
+        - RootResourceId
+      PathPart: '{proxy+}'
+      RestApiId: !Ref 'ApiGatewayRestApi'
+
+  ApiGatewayMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      AuthorizationType: 'NONE'
+      HttpMethod: 'ANY'
+      ResourceId: !Ref 'ApiGatewayResource'
+      RestApiId: !Ref 'ApiGatewayRestApi'
+      Integration:
+        IntegrationHttpMethod: 'POST'
+        Type: 'AWS_PROXY'
+        Uri: !Sub 
+          - 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations'
+          - LambdaFunction: !GetAtt LambdaFunction.Arn
+
+  ApiGatewayDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref 'ApiGatewayRestApi'
+      StageName: 'prod'
+    DependsOn: ApiGatewayMethod
+
+  LambdaApiPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*/{proxy+}'
+
+##############################
+# CodePipeline
+##############################
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    DependsOn:
+      - LambdaFunction
+      - ApiGatewayRestApi
+      - CodeBuildProject
+    Properties:
+      RoleArn: !GetAtt CodePipelineExecutionRole.Arn
+      Name: !Sub
+        - '${AppName}-CodePipeline'
+        - AppName: !Ref AppName
+      ArtifactStore:
+        Type: S3
+        Location: !Ref S3Bucket
+
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceAction
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: '1'
+                Provider: CodeStarSourceConnection
+              Configuration:
+                ConnectionArn: !Ref GitConnectionArn
+                FullRepositoryId: !Ref GitRepo
+                BranchName: !Ref GitBranch
+              OutputArtifacts:
+                - Name: SourceOutput
+
+        - Name: Build
+          Actions:
+            - Name: BuildAction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Sub
+                  - '${AppName}-CodeBuild'
+                  - AppName: !Ref AppName
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+
+  CodePipelineExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'codepipeline.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CodePipelineExecutionPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'codecommit:GitPull'
+                  - 'codebuild:BatchGetBuilds'
+                  - 'codebuild:StartBuild'
+                  - 's3:GetObject'
+                  - 's3:GetObjectVersion'
+                  - 's3:PutObject'
+                  - 's3:GetBucketVersioning'
+                  - 's3:PutBucketVersioning'
+                  - 'lambda:InvokeFunction'
+                  - 'codestar-connections:UseConnection'
+                Resource: '*'
+
+##############################
+# CodeBuild
+##############################
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    DependsOn:
+      - LambdaFunction
+    Properties:
+      Name: !Sub
+        - '${AppName}-CodeBuild'
+        - AppName: !Ref AppName
+      ServiceRole: !GetAtt CodeBuildExecutionRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:6.0
+        EnvironmentVariables:
+          - Name: APP_NAME
+            Value: !Ref AppName
+          - Name: S3_BUCKET
+            Value: !Ref S3Bucket
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: buildspec.yml
+      TimeoutInMinutes: 60
+  
+  CodeBuildExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'codebuild.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'CodeBuildExecutionPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action:
+                  - 's3:GetObject'
+                  - 's3:GetObjectVersion'
+                  - 's3:PutObject'
+                  - 's3:GetBucketVersioning'
+                  - 's3:PutBucketVersioning'
+                  - 'lambda:UpdateFunctionCode'
+                Resource: '*'
+              - Effect: 'Allow'
+                Action:
+                  - 'lambda:InvokeFunction'
+                Resource: '*'
+
+Outputs:
+  ApiGatewayUrl:
+    Description: 'API Gateway endpoint URL for Prod stage'
+    Value: !Sub 'https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/prod/{proxy+}'
