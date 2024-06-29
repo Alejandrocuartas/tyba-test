@@ -1,6 +1,12 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "./connection";
 
+/**
+- DEPOSIT: The user deposits money to the account.
+- WITHDRAW: The user withdraws money from the account.
+- PROFIT: The user had a profit on any investment.
+- INVESTMENT: The user invests money in any investment opportunity.
+*/
 export enum TransactionType {
     DEPOSIT = 'DEPOSIT',
     WITHDRAW = 'WITHDRAW',

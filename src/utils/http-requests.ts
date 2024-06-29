@@ -3,6 +3,10 @@ import getEnvironmentVariable from '../utils/environment';
 import { GeocodingResponse, RestaurantsResponse } from '../types';
 import { ErrorMessages } from './errors-management';
 
+/**
+This function has an input address='Cali, Valle del Cauca, Colombia'
+and returns the latitude and longitude of the address '3.4516467,-76.5319854'
+*/
 const geocodeAddress = async (address: string) => {
     let latitudeLongitude: string;
     const response = await axios.get<GeocodingResponse>(`https://maps.googleapis.com/maps/api/geocode/json`, {
@@ -20,6 +24,10 @@ const geocodeAddress = async (address: string) => {
     return latitudeLongitude;
 }
 
+/**
+This function searches for restaurants near the given latitude and longitude latitudeLongitude: string = '3.4516467,-76.5319854'
+pageToken is used to paginate the results and is provided by the Google Maps API
+*/
 const searchRestaurants = async (latitudeLongitude: string, pageToken?: string) => {
     const response = await axios.get<RestaurantsResponse>(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
         params: {

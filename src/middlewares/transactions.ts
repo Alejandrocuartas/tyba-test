@@ -3,8 +3,16 @@ import { CreateTransactionRequestBody } from '../types';
 import { ErrorMessages, manageError } from '../utils/errors-management';
 import { TransactionType } from '../models/transaction';
 
-const createTransactionMiddleware = (req: Request<{}, {}, CreateTransactionRequestBody>, res: Response, next: Function) => {
+/**
+This middleware validates the transaction request body.
 
+- The amount cannot be 0.
+
+- The amount must be positive for transactions that add money to the user's balance. 
+
+- The amount must be negative for transactions that remove money from the user's balance.
+*/
+const createTransactionMiddleware = (req: Request<{}, {}, CreateTransactionRequestBody>, res: Response, next: Function) => {
     try {
 
         if (req.body.amount === 0) {

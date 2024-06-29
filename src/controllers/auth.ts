@@ -6,6 +6,9 @@ import { manageError } from '../utils/errors-management';
 import { loginService, signupService } from '../services/auth';
 import dbConfig from '../config';
 
+/**
+This function controls the signup of a user validating REST responses and errors and generating a JWT token
+*/
 const signup = async (req: Request<{}, {}, SignUpRequestBody>, res: Response) => {
 
     try {
@@ -22,6 +25,9 @@ const signup = async (req: Request<{}, {}, SignUpRequestBody>, res: Response) =>
     }
 }
 
+/**
+This function controls the login of a user validating REST responses and errors and generating a JWT token
+*/
 const login = async (req: Request<{}, {}, LoginRequestBody>, res: Response) => {
 
     try {

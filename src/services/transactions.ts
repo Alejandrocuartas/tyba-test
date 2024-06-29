@@ -2,6 +2,9 @@ import { CreateTransactionRequestBody } from "../types";
 import Transaction, { TransactionStatus } from "../models/transaction";
 import { ErrorMessages } from "../utils/errors-management";
 
+/**
+This function gets the balance of a user
+*/
 const getUserBalance = async (userId: number) => {
     const transactions = await Transaction.findAll({
         where: {
@@ -15,6 +18,11 @@ const getUserBalance = async (userId: number) => {
     return totalAmount;
 }
 
+/**
+This function creates a transaction for a user validating if the user has enough money
+in case of withdrawal or investment so the user can't withdraw more money than he has
+and balance is never negative
+*/
 const createTransactionService = async (
     data: CreateTransactionRequestBody,
     userId: number
@@ -40,6 +48,9 @@ const createTransactionService = async (
     return transaction;
 }
 
+/**
+This function gets and paginates the transactions of a user
+*/
 const getTransactionsService = async (
     userId: number,
     limit: number,

@@ -12,8 +12,10 @@ export enum ErrorMessages {
     ADDRESS_NOT_FOUND = 'Address not found',
 }
 
+/**
+This function is used to manage REST API errors 
+*/
 export const manageError = (response: Response, error: any) => {
-    console.log(error);
     switch (error.message) {
         case ErrorMessages.USERNAME_EXISTS:
             response.status(409).json({ error: error.message });
@@ -43,6 +45,7 @@ export const manageError = (response: Response, error: any) => {
             response.status(404).json({ error: error.message });
             break;
         default:
+            console.log(error);
             response.status(500).json({ error: 'Unexpected server error' });
             break;
     }

@@ -4,14 +4,14 @@ import Server from '../server';
 import jwt from "jsonwebtoken";
 import getEnvironmentVariable from "../utils/environment";
 
-jest.mock('../models/user')
-jest.mock('../models/transaction')
-jest.mock('sequelize')
+jest.mock('../models/user');
+jest.mock('../models/transaction');
+jest.mock('sequelize');
 
-const app = new Server()
+const app = new Server();
 
 describe('/v1/auth/signup', () => {
-    test('should return 200 for correct parameters sent', async () => {
+    test('should return 201 for correct parameters sent', async () => {
 
         const res = await request(app.app)
             .post('/v1/auth/signup')
@@ -22,7 +22,7 @@ describe('/v1/auth/signup', () => {
             .set('Accept', 'application/json')
 
         expect(res.statusCode).toBe(201)
-    })
+    });
 
     test('should return 400 for incorrect parameters sent', async () => {
         const res = await request(app.app)
@@ -34,7 +34,7 @@ describe('/v1/auth/signup', () => {
             .set('Accept', 'application/json')
 
         expect(res.statusCode).toBe(400)
-    })
+    });
 });
 
 describe('/v1/transactions', () => {
@@ -52,7 +52,7 @@ describe('/v1/transactions', () => {
             set('x-auth-token', token)
 
         expect(res.statusCode).toBe(201)
-    })
+    });
 
     test('should return 400 for incorrect parameters sent', async () => {
         const res = await request(app.app)
@@ -65,18 +65,18 @@ describe('/v1/transactions', () => {
             set('x-auth-token', token)
 
         expect(res.statusCode).toBe(400)
-    })
+    });
 
-    test('should return 401 for incorrect token', async () => {
+    test('should return 401 for incorrect auth token', async () => {
         const res = await request(app.app)
             .post('/v1/transactions')
             .send({
                 amount: 100,
-                type: 'deposit',
+                type: 'DEPOSIT',
             })
             .set('Accept', 'application/json')
             .set('x-auth-token', 'incorrect_token')
 
         expect(res.statusCode).toBe(401)
-    })
+    });
 });

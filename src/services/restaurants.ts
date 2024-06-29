@@ -4,6 +4,11 @@ import { ErrorMessages } from '../utils/errors-management';
 import { geocodeAddress, searchRestaurants } from '../utils/http-requests';
 import { mapRestaurantsApiResponse } from '../utils/mappings';
 
+/**
+This function gets the restaurants near the given location and
+pageToken is used to paginate the results and is provided by the Google Maps API
+on the response
+*/
 const getRestaurantsService = async (location: string, pageToken?: string) => {
 
     let latitudeLongitude = location.trim();

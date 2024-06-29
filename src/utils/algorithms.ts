@@ -1,3 +1,6 @@
+/**
+This function checks if the ocation is a 'latitude,longitude' string
+*/
 const isLatLong = (location: string) => {
     const parts = location.split(',');
 
@@ -21,6 +24,9 @@ const isLatLong = (location: string) => {
     return false;
 };
 
+/**
+This function extracts the href attribute from a <a> HTML string tag
+*/
 const extractHref = (htmlString: string) => {
     // Regular expression to match href attribute value from <a> tag
     const hrefRegex = /<a\s+href="([^"]*)"/;

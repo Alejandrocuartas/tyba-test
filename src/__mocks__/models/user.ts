@@ -1,3 +1,6 @@
+/* 
+Model mock to avoid errors when testing
+*/
 const User = {
     create: jest.fn(),
     findAll: jest.fn(),

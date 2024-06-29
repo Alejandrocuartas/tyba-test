@@ -5,10 +5,15 @@ import getEnvironmentVariable from './utils/environment';
 import authRouter from './routes/auth';
 import transactionsRouter from './routes/transactions';
 import restaurantsRouter from './routes/restaurants';
+
+/**
+This class is used to create the Express app and to set the middlewares and routes and any other configuration of the app
+*/
 class ServerModel {
     private origin
     private port
     app
+
     constructor() {
         this.app = express();
 

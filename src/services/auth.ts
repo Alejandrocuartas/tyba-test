@@ -4,6 +4,9 @@ import { ErrorMessages } from "../utils/errors-management";
 
 import bcrypt from 'bcryptjs';
 
+/**
+This function creates a new user validating if the username already exists
+*/
 const signupService = async (data: SignUpRequestBody) => {
     const user = await User.findOne({ where: { username: data.username } });
 
@@ -21,6 +24,9 @@ const signupService = async (data: SignUpRequestBody) => {
     return newUser;
 }
 
+/**
+This function authenticates a user validating if the username and password are correct
+*/
 const loginService = async (data: LoginRequestBody) => {
     const user = await User.findOne({ where: { username: data.username } });
 

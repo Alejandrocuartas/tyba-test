@@ -19,10 +19,16 @@ export interface JWTPayload {
     userId: number;
 }
 
+/** 
+The param 'userId' is set by the JWT middleware
+*/
 export interface ParamsForAuthenticatedUser {
     userId: number;
 };
 
+/**
+Google Maps API response
+*/
 export interface GeocodingResponse {
     results: Array<{
         geometry: {
@@ -34,6 +40,9 @@ export interface GeocodingResponse {
     }>;
 };
 
+/**
+Google Maps API response
+*/
 export interface RestaurantsResponse {
     next_page_token: string;
     results: Array<{

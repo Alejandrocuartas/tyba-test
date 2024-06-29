@@ -43,11 +43,13 @@ User.init({
 );
 
 User.beforeCreate(async (user) => {
+    // Hash the password before saving it to the database
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
 });
 
 User.hasMany(Transaction, {
+    // The foreign key on the transactions table is the user_id
     foreignKey: 'user_id',
 });
 

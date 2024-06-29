@@ -3,6 +3,9 @@ import jwt from 'jsonwebtoken';
 import dbConfig from '../config';
 import { JWTPayload, ParamsForAuthenticatedUser } from '../types';
 
+/**
+This middleware validates the JWT token and sets the userId on the request params
+*/
 const validateAuth = (req: Request<ParamsForAuthenticatedUser, {}, {}>, res: Response, next: Function) => {
     const token = req.header('x-auth-token');
     if (!token) {
