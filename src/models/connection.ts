@@ -9,9 +9,9 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.p
     dialectOptions: {
         ssl: {
             require: true,
-            rejectUnauthorized: false
-        }
-    }
+            rejectUnauthorized: false,
+        },
+    },
 });
 
 export default sequelize;
