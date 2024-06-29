@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "ES2021",
+        "module": "commonjs",
+        "rootDir": "./src/",
+        "types": [
+            "node",
+            "express",
+            "cors",
+            "bcryptjs",
+            "jsonwebtoken"
+        ],
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "./src/"
+    ]
+}
