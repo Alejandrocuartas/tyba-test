@@ -55,7 +55,7 @@ Resources:
       FunctionName: !Ref AppName
       Handler: !Ref LambdaHandler
       Role: !GetAtt LambdaExecutionRole.Arn
-      Runtime: 'nodejs18.x'
+      Runtime: 'nodejs20.x'
       Timeout: 30
       Code:
         S3Bucket: !Ref S3Bucket
@@ -96,6 +96,13 @@ Resources:
                   - 'logs:CreateLogGroup'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
+                  - 'rds:DescribeDBInstances'
+                  - 'rds:DescribeDBClusters'
+                  - 'rds:DescribeDBSubnetGroups'
+                  - 'rds:DescribeDBSecurityGroups'
+                  - 'rds:DescribeDBParameterGroups'
+                  - 'rds:DescribeDBEngineVersions'
+                  - 'rds:DescribeEvents'
                 Resource: 'arn:aws:logs:*:*:*'
 
 ##############################
