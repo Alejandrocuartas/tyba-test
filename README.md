@@ -102,8 +102,9 @@ GOOGLE_MAPS_API_KEY=<your_api_key>
 To deploy the stack, fill in the variables in the cloudformation/deploy.sh file and run `npm run deploy`. This deployment includes:
 
  - AWS Lambda: I used Express.js with serverless-http for serverless config.
- - API Gateway: This invokes the function.
- - CI/CD with CodePipeline and CodeBuild: The CI/CD flow includes builds and tests each time a push is made to main branch.
+ - AWS API Gateway: This invokes the function.
+ - CI/CD with AWS CodePipeline and AWS CodeBuild: The CI/CD flow includes builds and tests each time a push is made to main branch.
+ - AWS RDS PostgreSQL: I have the production database on AWS RDS
 
 ## Contributing
 
